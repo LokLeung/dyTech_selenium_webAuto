@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_myfirstideaproject" default="compile.module.myfirstideaproject">
+  <dirname property="module.myfirstideaproject.basedir" file="${ant.file.module_myfirstideaproject}"/>
+  
+  <property name="module.jdk.home.myfirstideaproject" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.myfirstideaproject" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.myfirstideaproject" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.myfirstideaproject" value="-encoding UTF-8 -source 11 -target 11 ${compiler.args}"/>
+  
+  <property name="myfirstideaproject.output.dir" value="${module.myfirstideaproject.basedir}/out/production/myFirstIdeaProject"/>
+  <property name="myfirstideaproject.testoutput.dir" value="${module.myfirstideaproject.basedir}/out/test/myFirstIdeaProject"/>
+  
+  <path id="myfirstideaproject.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="myfirstideaproject.module.production.classpath">
+    <path refid="${module.jdk.classpath.myfirstideaproject}"/>
+    <fileset dir="${basedir}/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="myfirstideaproject.runtime.production.module.classpath">
+    <pathelement location="${myfirstideaproject.output.dir}"/>
+    <fileset dir="${basedir}/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="myfirstideaproject.module.classpath">
+    <path refid="${module.jdk.classpath.myfirstideaproject}"/>
+    <pathelement location="${myfirstideaproject.output.dir}"/>
+    <fileset dir="${basedir}/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="myfirstideaproject.runtime.module.classpath">
+    <pathelement location="${myfirstideaproject.testoutput.dir}"/>
+    <pathelement location="${myfirstideaproject.output.dir}"/>
+    <fileset dir="${basedir}/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.myfirstideaproject">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.myfirstideaproject">
+    <patternset refid="excluded.from.module.myfirstideaproject"/>
+  </patternset>
+  
+  <path id="myfirstideaproject.module.sourcepath">
+    <dirset dir="${module.myfirstideaproject.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.myfirstideaproject" depends="compile.module.myfirstideaproject.production,compile.module.myfirstideaproject.tests" description="Compile module myFirstIdeaProject"/>
+  
+  <target name="compile.module.myfirstideaproject.production" depends="register.custom.compilers" description="Compile module myFirstIdeaProject; production classes">
+    <mkdir dir="${myfirstideaproject.output.dir}"/>
+    <javac2 destdir="${myfirstideaproject.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.myfirstideaproject}/javac">
+      <compilerarg line="${compiler.args.myfirstideaproject}"/>
+      <bootclasspath refid="myfirstideaproject.module.bootclasspath"/>
+      <classpath refid="myfirstideaproject.module.production.classpath"/>
+      <src refid="myfirstideaproject.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.myfirstideaproject"/>
+    </javac2>
+    
+    <copy todir="${myfirstideaproject.output.dir}">
+      <fileset dir="${module.myfirstideaproject.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.myfirstideaproject.tests" depends="register.custom.compilers,compile.module.myfirstideaproject.production" description="compile module myFirstIdeaProject; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.myfirstideaproject" description="cleanup module">
+    <delete dir="${myfirstideaproject.output.dir}"/>
+    <delete dir="${myfirstideaproject.testoutput.dir}"/>
+  </target>
+</project>
